@@ -1,0 +1,111 @@
+
+<style>
+    body {
+        background: linear-gradient(120deg, #e0eafc 0%, #cfdef3 100%);
+        font-family: 'Segoe UI', Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+    }
+    .login-container {
+        background: #fff;
+        padding: 40px 32px 32px 32px;
+        border-radius: 16px;
+        max-width: 400px;
+        margin: 60px auto 0 auto;
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .login-container h2 {
+        color: #0984e3;
+        margin-bottom: 24px;
+        font-weight: 700;
+        letter-spacing: 1px;
+    }
+    .login-container label {
+        color: #636e72;
+        font-weight: 600;
+        margin-bottom: 6px;
+        display: block;
+        font-size: 15px;
+    }
+    .login-container input[type="text"],
+    .login-container input[type="password"] {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #dfe6e9;
+        border-radius: 6px;
+        margin-bottom: 18px;
+        font-size: 15px;
+        background: #f7faff;
+        transition: border 0.2s;
+    }
+    .login-container input:focus {
+        border: 1.5px solid #0984e3;
+        outline: none;
+        background: #f0f8ff;
+    }
+    .login-container button {
+        background: linear-gradient(90deg, #0984e3 0%, #74b9ff 100%);
+        color: #fff;
+        border: none;
+        padding: 12px 0;
+        width: 100%;
+        border-radius: 6px;
+        font-weight: bold;
+        font-size: 16px;
+        cursor: pointer;
+        margin-top: 8px;
+        box-shadow: 0 2px 8px rgba(9,132,227,0.08);
+        transition: background 0.2s;
+    }
+    .login-container button:hover {
+        background: linear-gradient(90deg, #74b9ff 0%, #0984e3 100%);
+    }
+    .login-container .error-message {
+        color: #d63031;
+        background: #ffeaea;
+        border: 1px solid #fab1a0;
+        padding: 10px 14px;
+        border-radius: 5px;
+        margin-bottom: 18px;
+        width: 100%;
+        text-align: center;
+        font-size: 15px;
+    }
+    .login-container .register-link {
+        margin-top: 18px;
+        font-size: 15px;
+        color: #636e72;
+    }
+    .login-container .register-link a {
+        color: #0984e3;
+        text-decoration: none;
+        font-weight: 600;
+        transition: text-decoration 0.2s;
+    }
+    .login-container .register-link a:hover {
+        text-decoration: underline;
+    }
+</style>
+<div class="login-container">
+    <h2>Sign In to Your Account</h2>
+    {% if error %}
+        <div class="error-message">{{ error }}</div>
+    {% endif %}
+    <form method="POST">
+        {% csrf_token %}
+        <label for="username">Username</label>
+        <input id="username" type="text" name="username" required autocomplete="username">
+
+        <label for="password">Password</label>
+        <input id="password" type="password" name="password" required autocomplete="current-password">
+
+        <button type="submit">Login</button>
+    </form>
+    <div class="register-link">
+        Don't have an account? <a href="{% url 'tasks:register' %}">Register</a>
+    </div>
+</div>

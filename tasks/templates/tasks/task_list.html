@@ -1,0 +1,175 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Beautiful Todo List</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%);
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 500px;
+            margin: 60px auto;
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(60, 72, 100, 0.15);
+            padding: 32px 28px 24px 28px;
+        }
+        h1 {
+            text-align: center;
+            color: #4f46e5;
+            margin-bottom: 28px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        .todo-form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+        .todo-form input[type="text"] {
+            flex: 1;
+            padding: 10px 14px;
+            border: 1px solid #c7d2fe;
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            transition: border 0.2s;
+        }
+        .todo-form input[type="text"]:focus {
+            border-color: #6366f1;
+        }
+        .todo-form button {
+            background: #6366f1;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 18px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .todo-form button:hover {
+            background: #4f46e5;
+        }
+        ul.todo-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        ul.todo-list li {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #f1f5f9;
+            margin-bottom: 12px;
+            padding: 14px 16px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+        ul.todo-list li.completed {
+            text-decoration: line-through;
+            color: #a5b4fc;
+            background: #e0e7ff;
+        }
+        .actions button {
+            background: none;
+            border: none;
+            color: #6366f1;
+            font-size: 1.1rem;
+            margin-left: 8px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .actions button:hover {
+            color: #ef4444;
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 18px 6px 12px 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        {% if user.is_authenticated %}
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
+            <div>
+                <h1 style="margin: 0; color: #4f46e5;">My Todo List</h1>
+                <span style="color: #64748b; font-size: 1.1rem;">Welcome, <strong>{{ user.username }}</strong></span>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <a href="{% url 'tasks:password_change' %}" style="
+                    background: #6366f1;
+                    color: #fff;
+                    border: none;
+                    border-radius: 8px;
+                    padding: 8px 16px;
+                    font-size: 0.98rem;
+                    font-weight: 600;
+                    text-decoration: none;
+                    display: inline-block;
+                    box-shadow: 0 2px 8px rgba(99,102,241,0.08);
+                    transition: background 0.2s, box-shadow 0.2s;
+                "
+                onmouseover="this.style.background='#4f46e5';this.style.boxShadow='0 4px 16px rgba(79,70,229,0.13)';"
+                onmouseout="this.style.background='#6366f1';this.style.boxShadow='0 2px 8px rgba(99,102,241,0.08)';"
+                >Change Password</a>
+                <form method="post" action="{% url 'tasks:logout' %}" style="margin: 0;">
+                    {% csrf_token %}
+                    <button type="submit" style="
+                        background: #ef4444;
+                        color: #fff;
+                        border: none;
+                        border-radius: 8px;
+                        padding: 8px 16px;
+                        font-size: 0.98rem;
+                        font-weight: 600;
+                        cursor: pointer;
+                        box-shadow: 0 2px 8px rgba(239,68,68,0.08);
+                        transition: background 0.2s, box-shadow 0.2s;
+                    "
+                    onmouseover="this.style.background='#dc2626';this.style.boxShadow='0 4px 16px rgba(220,38,38,0.13)';"
+                    onmouseout="this.style.background='#ef4444';this.style.boxShadow='0 2px 8px rgba(239,68,68,0.08)';"
+                    >Logout</button>
+                </form>
+            </div>
+        </div>
+        {% endif %}
+    <div style="margin: 24px 0; display: flex; justify-content: flex-end;">
+        <form class="todo-form" method="post" style="width:100%; max-width: 100%;">
+        {% csrf_token %}
+        <input type="text" name="title" placeholder="Add a new task..." required>
+        <button type="submit">Add</button>
+        </form>
+    </div>
+    <ul class="todo-list">
+        {% for task in tasks %}
+        <li class="{% if task.completed %}completed{% endif %}">
+        <span style="flex:1; word-break:break-word;">{{ task.title }}</span>
+        <div class="actions" style="display:flex; align-items:center;">
+            <form method="post" action="{% url 'tasks:toggle_complete' task.id %}" style="display:inline;">
+            {% csrf_token %}
+            <button title="Mark as done" style="color: {% if task.completed %}#22c55e{% else %}#6366f1{% endif %}; font-size:1.2rem; background:transparent;">&#10003;</button>
+            </form>
+            <form method="post" action="{% url 'tasks:delete' task.id %}" style="display:inline;">
+            {% csrf_token %}
+            <button title="Delete" style="color:#ef4444; font-size:1.2rem; background:transparent;">&#10005;</button>
+            </form>
+        </div>
+        </li>
+        {% empty %}
+        <li style="text-align:center; color:#a1a1aa;">No tasks yet. Add one!</li>
+        {% endfor %}
+    </ul>
+    </div>
+</body>
+</html>

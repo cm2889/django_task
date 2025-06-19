@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register</title>
+</head>
+<body>
+<h2>Register</h2>
+{% if error %}
+<p style="color:red;">{{ error }}</p>
+{% endif %}
+<form method="POST">
+    {% csrf_token %}
+    <label>Username:</label><br>
+    <input type="text" name="username" required><br><br>
+
+    <label>Email:</label><br>
+    <input type="email" name="email" required><br><br>
+
+    <label>Phone:</label><br>
+    <input type="text" name="phone" required><br><br>
+
+    <label>Date of Birth:</label><br>
+    <input type="date" name="date_of_birth" required><br><br>
+
+    <label>Password:</label><br>
+    <input type="password" name="password" required><br><br>
+
+    <button type="submit">Register</button>
+</form>
+<p>Already have an account? <a href="{% url 'tasks:login' %}">Login</a></p>
+</body>
+</html>
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(120deg, #f6d365 0%, #fda085 100%);
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .register-container {
+        background: #fff;
+        padding: 32px 40px;
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+        width: 350px;
+        max-width: 90vw;
+    }
+    h2 {
+        text-align: center;
+        color: #f57c00;
+        margin-bottom: 24px;
+    }
+    label {
+        font-weight: 500;
+        color: #333;
+    }
+    input[type="text"], input[type="email"], input[type="date"], input[type="password"] {
+        width: 100%;
+        padding: 10px 12px;
+        margin-top: 6px;
+        margin-bottom: 18px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 15px;
+        transition: border-color 0.2s;
+    }
+    input:focus {
+        border-color: #f57c00;
+        outline: none;
+    }
+    button[type="submit"] {
+        width: 100%;
+        background: #f57c00;
+        color: #fff;
+        border: none;
+        padding: 12px;
+        border-radius: 6px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+    button[type="submit"]:hover {
+        background: #ff9800;
+    }
+    p {
+        text-align: center;
+        margin-top: 18px;
+        color: #555;
+    }
+    a {
+        color: #f57c00;
+        text-decoration: none;
+        font-weight: 500;
+    }
+    a:hover {
+        text-decoration: underline;
+    }
+    .error-message {
+        color: #d32f2f;
+        background: #ffeaea;
+        border: 1px solid #f8bbbc;
+        padding: 10px;
+        border-radius: 6px;
+        margin-bottom: 18px;
+        text-align: center;
+    }
+</style>
+<script>
+    // Optional: Add simple fade-in effect
+    document.addEventListener("DOMContentLoaded", function() {
+        document.querySelector('.register-container').style.opacity = 0;
+        setTimeout(function() {
+            document.querySelector('.register-container').style.transition = "opacity 0.7s";
+            document.querySelector('.register-container').style.opacity = 1;
+        }, 100);
+    });
+</script>
+<!-- Wrap form in a container for styling -->
+<script>
+    // Move form into a container div after DOM loads
+    document.addEventListener("DOMContentLoaded", function() {
+        var form = document.querySelector('form');
+        var container = document.createElement('div');
+        container.className = 'register-container';
+        form.parentNode.insertBefore(container, form);
+        container.appendChild(form);
+        // Move error message if exists
+        var error = document.querySelector('p[style*="color:red"]');
+        if (error) {
+            error.className = 'error-message';
+            container.insertBefore(error, form);
+        }
+        // Move h2 into container
+        var h2 = document.querySelector('h2');
+        container.insertBefore(h2, container.firstChild);
+        // Move "Already have an account?" into container
+        var p = document.querySelector('p:not(.error-message)');
+        if (p) container.appendChild(p);
+    });
+</script>
