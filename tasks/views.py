@@ -53,15 +53,19 @@ def register(request):
 
 def login_view(request):
     if request.method == 'POST':
-        username = request.POST['username']
+        phone = request.POST['phone']
         password = request.POST['password']
 
-        user = authenticate(request, username=username, password=password)
-        if user:
-            login(request, user)
-            return redirect('tasks:list')
-        else:
-            return render(request, 'tasks/login.html', {'error': 'Invalid credentials'})
+        try:
+            profile = Profile.objects.get(phone=phone)
+            user = authenticate(request, username=profile.user.username, password=password)
+            if user:
+                login(request, user)
+                return redirect('tasks:list')
+            else:
+                return render(request, 'tasks/login.html', {'error': 'Invalid credentials'})
+        except Profile.DoesNotExist:
+            return render(request, 'tasks/login.html', {'error': 'User not found'})
 
     return render(request, 'tasks/login.html')
 
